@@ -5,6 +5,8 @@ import PropTypes from 'prop-types';
 import StarsBreakdown from './starsbreakdown.jsx';
 import CharacteristicsBreakdown from './characteristics.jsx';
 
+console.log('someting');
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -46,7 +48,8 @@ const averageRating = (ratings) => {
 
 let rating;
 
-export const Overview = ({ metaData }) => {
+export const Overview = ({ metaData, characteristicsRatings, characteristics }) => {
+
   const usersRecommendedCalculator = (data) => {
     let recommendedStr;
     if (!data.true) {
@@ -68,9 +71,12 @@ export const Overview = ({ metaData }) => {
   } else {
     ratingStr = `${rating}`;
   }
+  console.log(characteristicsRatings, 'crating');
+  console.log(characteristics, 'characteristics');
 
   return (
     <Container>
+      <div>SALDFjhlsdfjl</div>
       <RatingWrapper>
         <Rating>
           {ratingStr}
@@ -87,8 +93,8 @@ export const Overview = ({ metaData }) => {
       <Recommends>
         {usersRecommendedCalculator(metaData.recommended)}
       </Recommends>
-      <StarsBreakdown ratings={metaData.ratings} totalRatings={totalRatingsCount} />
-      <CharacteristicsBreakdown characteristics={metaData.characteristics} />
+      {/* <StarsBreakdown ratings={metaData.ratings} totalRatings={totalRatingsCount} /> */}
+      <CharacteristicsBreakdown characteristics={metaData.characteristics} characteristics2={characteristics} characteristicsRatings={characteristicsRatings} />
     </Container>
   );
 };

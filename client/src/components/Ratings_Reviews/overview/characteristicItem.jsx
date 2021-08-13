@@ -40,8 +40,12 @@ const Bar = styled.progress`
 
 const positioner = (value) => Math.round(Number(value)) / 5 * 100;
 
-const CharacteristicItem = ({ name, val }) => {
+// last time working on this
+
+const CharacteristicItem = ({ name, val, thisCharacteristic, characteristicsRatings }) => {
+  let averageScore = '5';
   const barPosition = positioner(val);
+  console.log(thisCharacteristic, characteristicsRatings, 'both should exist');
   return (
     <Container>
       <CharLabel htmlFor="characteristicItem">{name}</CharLabel>

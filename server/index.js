@@ -7,6 +7,33 @@ const Calls = require('../api');
 const app = express();
 const port = 3000;
 
+
+const pg = require('pg');
+const keys = require('./config.js');
+const { Pool } = require('pg');
+var config1 = {
+  user: 'postgres',
+  database: 'stellar',
+  password: keys.key,
+  host: 'localhost',
+  port: 5432,
+  max: 10, // max number of clients in the pool
+  idleTimeoutMillis: 30000
+};
+const pool = new Pool(config1);
+pool.on('error', function (err, client) {
+  console.error('idle client error', err.message, err.stack);
+});
+
+// pool.query(query1, function (err, res) {
+//   if (err) {
+//     return console.error('error running query', err);
+//   }
+//   console.log(res.rows);
+// });
+
+
+
 app.use(express.static(path.join(__dirname, '..', 'client', 'dist')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -23,6 +50,11 @@ app.get('/products', (req, res) => {
     });
 });
 
+
+
+
+
+
 app.get('/products/:product_id', (req, res) => {
   axios.get(`/products/${req.params.product_id}`, { params: req.params })
     .then((results) => {
@@ -33,19 +65,171 @@ app.get('/products/:product_id', (req, res) => {
     });
 });
 
+//my junk
+
 app.get('/reviews', (req, res) => {
-  axios.get('/reviews', { params: req.query })
+  let sortBy;
+  let dataReviews;
+  if (req.query.sort === 'newest') {
+    sortBy = 'ORDER BY date DESC';
+  }
+
+  if (req.query.sort === 'helpful') {
+    sortBy = 'ORDER BY helpfulness DESC';
+  }
+
+  if (req.query.sort === 'relevant') {
+    sortBy = 'ORDER BY helpfulness DESC ORDER BY date DESC';
+  }
+
+  console.log(req.query, 'req.query');
+  const query1 = `SELECT * FROM reviews
+  WHERE product_id=${req.query.product_id}
+  ${sortBy}
+  LIMIT ${req.query.count};`;
+  // console.log(query1, 'query1');
+  pool.query(query1).then((hel) => {
+    let shell = hel;
+
+    // const forLoop = async _ => {
+    //   console.log('Start')
+
+    //   for (let i = 0; i < shell.rows.length; i++) {
+    //     console.log('hello');
+    //     let reviewId = shell.rows[i].id;
+    //     const queryPhotos = `SELECT url FROM photos WHERE review_id=${reviewId}`
+    //     let something = new Promise(resolve(pool.query(queryPhotos)));
+    //     console.log(something, 'something');
+
+    //   }
+
+    //   new Promise( (resolutionFunc,rejectionFunc) => {
+    //     resolutionFunc(777);
+    // });
+
+
+    //   console.log('End')
+    // }
+
+    // forLoop();
+    // console.log({results:hel.rows}, 'hel');
+    res.status(200).send({results:hel.rows});
+
+  }).catch((err) => console.log('Error in productsDB', err))
+
+});
+
+
+app.get('/reviews/characteristics', (req, res) => {
+
+  console.log(req.query, 'characteristics');
+  const query1 = `SELECT * FROM characteristics
+  WHERE product_id=${req.query.product_id};`;
+  console.log(query1, 'query1');
+  pool.query(query1).then((hel) => {
+    let shell = hel;
+
+    console.log({results:hel.rows}, 'hel');
+    res.status(200).send({results:hel.rows});
+
+  }).catch((err) => console.log('Error in productsDB', err))
+
+});
+
+app.get('/reviews/meta', (req, res) => {
+  // console.log('hello2');
+  axios.get('/reviews/meta', { params: req.query })
     .then((results) => {
-      res.status(200).send(results.data);
+      // console.log('hello2');
+
+      res.send(results.data);
     })
     .catch((err) => {
       res.send(err);
     });
 });
 
-app.get('/reviews/meta', (req, res) => {
+app.get('/reviews/characteristicsreviews', (req, res) => {
+
+
+  function doSomethingAsync(value) {
+    console.log(JSON.parse(req.query.characteristicsreviewsID), 'characteristicsshel')
+    console.log(value, 'aaaaaa');
+
+    return new Promise((resolve) => {
+
+      const query1 = `SELECT * FROM Characteristicsreviews
+      WHERE characteristic_id=${value.id};`;
+      console.log(query1, 'query1');
+
+
+      pool.query(query1).then((hel) => {
+        let shell = hel;
+        resolve(hel.rows);
+
+      })
+
+
+
+    });
+  }
+
+  function test() {
+    const listCharacter = JSON.parse(req.query.characteristicsreviewsID);
+
+      const promises = [];
+
+      for (let i = 0; i < listCharacter.length; ++i) {
+          promises.push(doSomethingAsync(listCharacter[i]));
+      }
+
+      Promise.all(promises)
+          .then((results) => {
+              console.log("All done", results);
+              res.status(200).send(results);
+
+          })
+          .catch((e) => {
+              // Handle errors here
+          });
+  }
+
+  test();
+
+
+
+
+
+
+  // pool.query(query1).then((hel) => {
+  //   let shell = hel;
+
+  //   console.log({results:hel.rows}, 'characterreviewhel');
+  //   res.status(200).send({results:hel.rows});
+
+  // }).catch((err) => console.log('Error in productsDB', err))
+
+  // console.log(req.query, 'characteristics');
+  // const query1 = `SELECT * FROM characteristics
+  // WHERE product_id=${req.query.product_id};`;
+  // console.log(query1, 'query1');
+  // pool.query(query1).then((hel) => {
+  //   let shell = hel;
+
+  //   console.log({results:hel.rows}, 'hel');
+  //   res.status(200).send({results:hel.rows});
+
+  // }).catch((err) => console.log('Error in productsDB', err))
+
+});
+
+
+app.get('/reviews/characteristics', (req, res) => {
+  // console.log('hello2');
   axios.get('/reviews/meta', { params: req.query })
     .then((results) => {
+      // console.log('hello2');
+
       res.send(results.data);
     })
     .catch((err) => {
@@ -83,6 +267,10 @@ app.put('/reviews/:review_id/report', (req, res) => {
     });
 });
 
+
+//my junk
+
+
 app.get('/display', (req, res) => {
   Calls.getDisplay(req.query.productId)
     .then((results) => {
@@ -95,19 +283,19 @@ app.get('/display', (req, res) => {
 });
 
 app.post('/reviews', (req, res) => {
-/*
-  {
-    "product_id": 25167,
-    "rating": 5,
-    "summary": "summary review text",
-    "body": "summary body text",
-    "recommend": false,
-    "name": "briang",
-    "email": "briang@gmail.com",
-    "photos": [],
-    "characteristics": { "84509": 1.5, "84510": 3, "84511": 2, "84512": 2 }
-  }
-*/
+  /*
+    {
+      "product_id": 25167,
+      "rating": 5,
+      "summary": "summary review text",
+      "body": "summary body text",
+      "recommend": false,
+      "name": "briang",
+      "email": "briang@gmail.com",
+      "photos": [],
+      "characteristics": { "84509": 1.5, "84510": 3, "84511": 2, "84512": 2 }
+    }
+  */
 });
 
 // Q&A Routes
@@ -215,3 +403,12 @@ app.get('/favorites', (req, res) => {
 app.listen(port, () => {
   console.log(`App listening at http://localhost:${port}`);
 });
+
+
+// const query1 = `SELECT * FROM reviews
+// INNER JOIN Photos ON Photos.review_id = Reviews.id
+// WHERE product_id=${req.query.product_id}
+// ${sortBy}
+// LIMIT ${req.query.count};`;
+
+

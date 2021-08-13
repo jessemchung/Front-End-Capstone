@@ -35,12 +35,17 @@ const RatingsAndReviews = () => {
   const [ratingFilter, setRatingFilter] = useState([]);
   const [reviewSubmit, setReviewSubmit] = useState(false);
   const [products, setProducts] = useContext(ProductsContext);
+  const [characteristics, setCharacteristics] = useState([]);
+  const [characteristicsRatings, setCharacteristicsRatings] = useState([]);
+
 
   useEffect(() => {
+    console.log('useing');
     axios.get('/reviews', {
       params: { product_id: products.currentItemId, sort: sortType, count: 100 },
     })
       .then((reviewsResults) => {
+        console.log(reviewsResults.data, 'mine');
         setProductData(reviewsResults.data);
       })
       .catch((err) => {
@@ -60,13 +65,41 @@ const RatingsAndReviews = () => {
       });
   }, [products]);
 
+  useEffect(() => {
+    console.log('characteristics')
+    axios.get('/reviews/characteristics', {
+      params: { product_id: products.currentItemId },
+    })
+      .then((results) => {
+        // console.log(results.data, 'characteristics results');
+        // console.log(results.data.results[0].id, 'shit');
+        setCharacteristics(results.data);
+
+        axios.get('/reviews/characteristicsreviews', {
+          params: { characteristicsreviewsID: JSON.stringify(results.data.results) },
+        })
+          .then((results) => {
+            console.log(results.data, 'characteristics results');
+            setCharacteristicsRatings(results.data);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
+//overview metadata needs to be adjusted
   if (productMetaData && productData) {
     return (
+
       <OuterContainer>
         <Header>Ratings and Reviews</Header>
         <Container>
           <BigContext.Provider value={{ productData, productMetaData, ratingFilter, setRatingFilter, reviewSubmit, setReviewSubmit }}>
-            <Overview metaData={productMetaData} />
+            <Overview metaData={productMetaData} characteristicsRatings={characteristicsRatings} characteristics={characteristics} />
             <MetaContext.Provider value={{ sortType, setSortType }}>
               <ReviewList reviews={productData} />
             </MetaContext.Provider>

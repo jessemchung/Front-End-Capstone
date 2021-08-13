@@ -108,7 +108,7 @@ function RelatedItem({ cardInfo }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isCarouselOpen, setCarouselOpen] = useState(false);
   let renderPhoto = '';
-  console.log(firstPhoto, 'seeing for nulls');
+  // console.log(firstPhoto, 'seeing for nulls');
 
   if (firstPhoto.thumbnail_url === null) {
     renderPhoto = '../../PNG/unavailable-image-300x225.jpg';
@@ -117,11 +117,11 @@ function RelatedItem({ cardInfo }) {
   }
 
   function changeProduct() {
-    console.log(products.currentItemId, 'the id before the change');
-    console.log(id, 'the id being saved ');
+    // console.log(products.currentItemId, 'the id before the change');
+    // console.log(id, 'the id being saved ');
     setProducts((prevState) => ({ ...prevState, currentItemId: id }));
 
-    console.log(products.currentItemId), ' the id after';
+    // console.log(products.currentItemId), ' the id after';
   }
 
   return (

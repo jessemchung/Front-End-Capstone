@@ -125,7 +125,7 @@ const ReviewList = ({ reviews }) => {
         <TagsList filterList={ratingFilter} />
       </HeaderWrapper>
       <List style={style}>
-        {reviewList.length === 0 ? <div style={{ width: '50%', margin: '50px auto 0 auto', textAlign: 'center' }}>Sorry, no reviews here!</div> : reviewList.map((item) => <ReviewListItem key={item.review_id} item={item} />)}
+        {reviewList.length === 0 ? <div style={{ width: '50%', margin: '50px auto 0 auto', textAlign: 'center' }}>Sorry, no reviews here!</div> : reviewList.map((item) => <ReviewListItem key={item.id} item={item} />)}
       </List>
       <ButtonWrapper>
         {moreReviewsClicked ? null : <Button onClick={handleMoreReviewsClick}>More Reviews</Button>}
@@ -137,3 +137,6 @@ const ReviewList = ({ reviews }) => {
 };
 
 export default ReviewList;
+
+
+//changed line 128 ite.review_id to id
