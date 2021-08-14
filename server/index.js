@@ -113,7 +113,7 @@ app.get('/reviews', (req, res) => {
 
     // forLoop();
     // console.log({results:hel.rows}, 'hel');
-    res.status(200).send({results:hel.rows});
+    res.status(200).send({ results: hel.rows });
 
   }).catch((err) => console.log('Error in productsDB', err))
 
@@ -122,6 +122,8 @@ app.get('/reviews', (req, res) => {
 
 app.get('/reviews/characteristics', (req, res) => {
 
+  //left join
+
   console.log(req.query, 'characteristics');
   const query1 = `SELECT * FROM characteristics
   WHERE product_id=${req.query.product_id};`;
@@ -129,32 +131,82 @@ app.get('/reviews/characteristics', (req, res) => {
   pool.query(query1).then((hel) => {
     let shell = hel;
 
-    console.log({results:hel.rows}, 'hel');
-    res.status(200).send({results:hel.rows});
+    console.log({ results: hel.rows }, 'hel');
+    res.status(200).send({ results: hel.rows });
 
   }).catch((err) => console.log('Error in productsDB', err))
 
 });
 
 app.get('/reviews/meta', (req, res) => {
-  // console.log('hello2');
-  axios.get('/reviews/meta', { params: req.query })
-    .then((results) => {
-      // console.log('hello2');
+  console.time("answer time");
 
-      res.send(results.data);
-    })
-    .catch((err) => {
-      res.send(err);
-    });
+  // console.log(req.query.product_id, 'AAAA');
+  const metaQuery = `SELECT * FROM reviews
+  LEFT JOIN characteristicsreviews ON reviews.id=characteristicsreviews.review_id
+  LEFT JOIN Characteristics ON Characteristics.id=characteristicsreviews.characteristic_id
+
+  WHERE reviews.product_id=${req.query.product_id}
+  LIMIT ${20};`;
+
+  // console.log(metaQuery, 'this is metaquery');
+  pool.query(metaQuery).then((hel) => {
+    let characteristics = {};
+    for (var i = 0; i < hel.rows.length; i++) {
+      characteristics[hel.rows[i].name] = { id: hel.rows[i].characteristic_id, value: 0 };
+    }
+    let counter = Object.keys(characteristics).length;
+
+
+    // console.log(counter, 'counter');
+    // console.log(hel.rows, 'hellt');
+    // console.log(hel.rows, 'hellt');
+    let ratingsObject = {
+      0: 0,
+      1: 0,
+      2: 0,
+      3: 0,
+      4: 0,
+      5: 0,
+    };
+
+    let recommended = { false: 0, true: 0 };
+    let keysOfquality = Object.keys(characteristics)
+
+    for (var i = 0; i < hel.rows.length; i++) {
+      ratingsObject[hel.rows[i].rating] += (1 / counter);
+      if (hel.rows[i].recommend) {
+        recommended.true += (1 / counter);
+      } else {
+        recommended.false += (1 / counter);
+      }
+      for (var j = 0; j < counter; j++) {
+        // console.log(characteristics[keysOfquality[j]].id === hel.rows[i].id, 'should be the keys');
+        if (characteristics[keysOfquality[j]].id === hel.rows[i].id) {
+          characteristics[keysOfquality[j]].value += (hel.rows[i].value / (20 / counter));
+        }
+      }
+    }
+    let finalConstruct = {
+      product_id: req.query.product_id,
+      ratings: ratingsObject,
+      recommended: recommended,
+      characteristics: characteristics,
+    }
+    console.timeEnd("answer time");
+
+    res.send(finalConstruct);
+  })
+
 });
+
 
 app.get('/reviews/characteristicsreviews', (req, res) => {
 
 
   function doSomethingAsync(value) {
-    console.log(JSON.parse(req.query.characteristicsreviewsID), 'characteristicsshel')
-    console.log(value, 'aaaaaa');
+    // console.log(JSON.parse(req.query.characteristicsreviewsID), 'characteristicsshel')
+    // console.log(value, 'aaaaaa');
 
     return new Promise((resolve) => {
 
@@ -168,58 +220,31 @@ app.get('/reviews/characteristicsreviews', (req, res) => {
         resolve(hel.rows);
 
       })
-
-
-
     });
   }
 
   function test() {
+
     const listCharacter = JSON.parse(req.query.characteristicsreviewsID);
+    console.log(listCharacter, 'this needs to be grapped for testing');
+    const promises = [];
 
-      const promises = [];
+    for (let i = 0; i < listCharacter.length; ++i) {
+      promises.push(doSomethingAsync(listCharacter[i]));
+    }
 
-      for (let i = 0; i < listCharacter.length; ++i) {
-          promises.push(doSomethingAsync(listCharacter[i]));
-      }
+    Promise.all(promises)
+      .then((results) => {
+        // console.log("All done", results);
+        res.status(200).send(results);
 
-      Promise.all(promises)
-          .then((results) => {
-              console.log("All done", results);
-              res.status(200).send(results);
-
-          })
-          .catch((e) => {
-              // Handle errors here
-          });
+      })
+      .catch((e) => {
+        // Handle errors here
+      });
   }
 
   test();
-
-
-
-
-
-
-  // pool.query(query1).then((hel) => {
-  //   let shell = hel;
-
-  //   console.log({results:hel.rows}, 'characterreviewhel');
-  //   res.status(200).send({results:hel.rows});
-
-  // }).catch((err) => console.log('Error in productsDB', err))
-
-  // console.log(req.query, 'characteristics');
-  // const query1 = `SELECT * FROM characteristics
-  // WHERE product_id=${req.query.product_id};`;
-  // console.log(query1, 'query1');
-  // pool.query(query1).then((hel) => {
-  //   let shell = hel;
-
-  //   console.log({results:hel.rows}, 'hel');
-  //   res.status(200).send({results:hel.rows});
-
-  // }).catch((err) => console.log('Error in productsDB', err))
 
 });
 
@@ -238,33 +263,97 @@ app.get('/reviews/characteristics', (req, res) => {
 });
 
 app.post('/reviews', (req, res) => {
-  axios.post('/reviews', req.body)
-    .then((results) => {
-      res.send(results);
-    })
-    .catch((err) => {
-      res.send(err);
-    });
+
+  //   INSERT INTO table_name(column1, column2, …)
+  // VALUES (value1, value2, …);
+
+  const query1 = `INSERT INTO reviews(product_id, rating, date, summary, body, recommend, reviewer_name, reviewer_email)
+  VALUES (${req.body.product_id}, ${req.body.rating}, ${'111111'},'${req.body.summary}','${req.body.body}',${req.body.recommend}, '${req.body.name}','${req.body.email}');`;
+  console.log(query1, 'query1');
+  pool.query(query1).then((hel) => {
+    console.log('fish');
+    console.log(hel, 'helll');
+    console.log('fihs');
+    // res.status(200).send({ results: hel.rows });
+
+  }).catch((err) => console.log('Error in productsDB', err))
+
+  res.send('sdf');
+
+  // {
+  //   product_id: 41355,
+  //   rating: 3,
+  //   summary: 'sdf',
+  //   body: 'adfadsfsdf',
+  //   recommend: false,
+  //   name: 'Jesse Chung',
+  //   email: 'jessemchung1@gmail.com',
+  //   photos: [],
+  //   characteristics: {}
+  // }
+
+
+  // axios.post('/reviews', req.body)
+  //   .then((results) => {
+  //     res.send(results);
+  //   })
+  //   .catch((err) => {
+  //     res.send(err);
+  //   });
 });
 
 app.put('/reviews/:review_id/helpful', (req, res) => {
-  axios.put(`/reviews/${req.params.review_id}/helpful`)
-    .then((results) => {
-      res.send(results.data);
-    })
-    .catch((err) => {
-      res.send(err);
-    });
+  console.log(req.params, 'query in helpful');
+
+  console.log(req.params.review_id, 'query in helpful');
+
+
+  const query2 = `UPDATE reviews
+  SET helpfulness = helpfulness+1
+  WHERE id=${req.params.review_id};`;
+
+  console.log(query2, 'this needs to be reworked');
+  pool.query(query2).then((hel) => {
+    console.log('fish');
+    console.log(hel, 'helll');
+    console.log('fihs');
+    // res.status(200).send({ results: hel.rows });
+    res.send('sdf');
+
+
+  }).catch((err) => console.log('Error in productsDB', err))
+
+
+
+
+
+  // axios.put(`/reviews/${req.params.review_id}/helpful`)
+  //   .then((results) => {
+  //     res.send(results.data);
+  //   })
+  //   .catch((err) => {
+  //     res.send(err);
+  //   });
 });
 
 app.put('/reviews/:review_id/report', (req, res) => {
-  axios.put(`/reviews/${req.params.review_id}/report`)
-    .then((results) => {
-      res.send(results.data);
-    })
-    .catch((err) => {
-      res.send(err);
-    });
+
+
+  const query2 = `UPDATE reviews
+  SET report = true
+  WHERE id=${req.params.review_id};`;
+
+  console.log(query2, 'this needs to be reworked');
+  pool.query(query2).then((hel) => {
+    console.log('fish');
+    console.log(hel, 'helll');
+    console.log('fihs');
+    // res.status(200).send({ results: hel.rows });
+    res.send('sdf');
+
+
+  }).catch((err) => console.log('Error in productsDB', err))
+
 });
 
 

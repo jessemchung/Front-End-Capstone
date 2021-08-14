@@ -3,9 +3,10 @@ import axios from 'axios';
 
 const initialProductState = {
   currentItem: {},
-  currentItemId: 25171,
+  currentItemId: 41355,
   relatedProducts: [],
 };
+//  currentItemId: 41355,
 
 const globalCaroselImg = {
   currentRelatedID: 0,

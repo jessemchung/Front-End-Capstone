@@ -84,12 +84,14 @@ const formatDate = (dateString) => {
 };
 
 const ReviewListItem = ({ item }) => {
+  console.log(item, "reviewlistitem needs fixing");
   const [helpfulBtnContents, setHelpfulContents] = useState(`Yes  (${item.helpfulness})`);
   const [reportBtnContents, setReportContents] = useState('Report');
 
   const markHelpful = () => {
     if (helpfulBtnContents === `Yes  (${item.helpfulness})`) {
-      axios.put(`/reviews/${item.review_id}/helpful`)
+      console.log(item.id, 'item.review_id')
+      axios.put(`/reviews/${item.id}/helpful`)
         .then((result) => {
           HelpfulBtn = styled.span`
             margin-left: 7px;
@@ -105,7 +107,7 @@ const ReviewListItem = ({ item }) => {
 
   const report = () => {
     if (reportBtnContents === 'Report') {
-      axios.put(`/reviews/${item.review_id}/report`)
+      axios.put(`/reviews/${item.id}/report`)
         .then((result) => {
           ReportBtn = styled.span`
             margin-left: 7px;

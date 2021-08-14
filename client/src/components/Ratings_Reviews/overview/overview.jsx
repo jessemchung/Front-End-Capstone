@@ -49,8 +49,9 @@ const averageRating = (ratings) => {
 let rating;
 
 export const Overview = ({ metaData, characteristicsRatings, characteristics }) => {
-
+  console.log(metaData, 'what is in here metaData');
   const usersRecommendedCalculator = (data) => {
+    console.log(data, 'this should be correct');
     let recommendedStr;
     if (!data.true) {
       recommendedStr = 'No Recommendations Yet!';
@@ -71,18 +72,18 @@ export const Overview = ({ metaData, characteristicsRatings, characteristics }) 
   } else {
     ratingStr = `${rating}`;
   }
+  console.log(rating, 'this is rating');
   console.log(characteristicsRatings, 'crating');
   console.log(characteristics, 'characteristics');
 
   return (
     <Container>
-      <div>SALDFjhlsdfjl</div>
       <RatingWrapper>
         <Rating>
           {ratingStr}
         </Rating>
         <StarRatings
-          rating={rating}
+          rating={3}
           starRatedColor="gold"
           starDimension="15px"
           starSpacing="0"
@@ -91,9 +92,10 @@ export const Overview = ({ metaData, characteristicsRatings, characteristics }) 
         />
       </RatingWrapper>
       <Recommends>
+        hello
         {usersRecommendedCalculator(metaData.recommended)}
       </Recommends>
-      {/* <StarsBreakdown ratings={metaData.ratings} totalRatings={totalRatingsCount} /> */}
+      <StarsBreakdown ratings={metaData.ratings} totalRatings={totalRatingsCount} />
       <CharacteristicsBreakdown characteristics={metaData.characteristics} characteristics2={characteristics} characteristicsRatings={characteristicsRatings} />
     </Container>
   );

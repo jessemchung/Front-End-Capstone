@@ -1,3 +1,4 @@
+
 import React from 'react';
 import _ from 'underscore';
 import styled from 'styled-components';
@@ -14,25 +15,16 @@ const Title = styled.div`
   margin-bottom: 5px;
 `;
 
-const CharacteristicsBreakdown = ({ characteristics, characteristicsRatings, characteristics2 }) => {
-  // console.log('characteristics2', characteristics);
-  // console.log('characteristics3', characteristics2);
-  // console.log('characteristicsRatings', characteristicsRatings);
-
+const CharacteristicsBreakdown = ({ characteristics }) => {
+  // console.log('characteristics', characteristics);
   const charsArr = [];
-  let counter = 0;
   _.each(characteristics, (val, key) => {
-    console.log({ key }, 'the keyskeys');
-    // console.log(index, 'this should be index');
-    charsArr.push({ key, val: val.value, id: val.id, thisCharacteristic:characteristics2, characteristicsRatings:characteristicsRatings });
-    counter++;
-    console.log(counter);
+    charsArr.push({ key, val: val.value, id: val.id });
   });
-  console.log(charsArr, 'chararr');
   return (
     <CharacteristicsList>
       {/* <Title>Item Specific</Title> */}
-      {charsArr.map((item) => <CharacteristicItem key={item.id} name={item.key} val={item.val} thisCharacteristic={item.thisCharacteristic} characteristicsRatings={item.characteristicsRatings} />)}
+      {charsArr.map((item) => <CharacteristicItem key={item.id} name={item.key} val={item.val} />)}
     </CharacteristicsList>
   );
 };

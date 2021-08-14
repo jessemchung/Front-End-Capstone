@@ -58,6 +58,7 @@ const RatingsAndReviews = () => {
       params: { product_id: products.currentItemId },
     })
       .then((results) => {
+        console.log(results.data, 'setProductMetaData');
         setProductMetaData(results.data);
       })
       .catch((err) => {
@@ -90,6 +91,8 @@ const RatingsAndReviews = () => {
         console.log(err);
       });
   }, []);
+
+  console.log('productData', productData);
 
 //overview metadata needs to be adjusted
   if (productMetaData && productData) {

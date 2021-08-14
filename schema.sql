@@ -43,7 +43,7 @@ CREATE TABLE Reviews (
   reported BOOLEAN NULL DEFAULT false,
   reviewer_name VARCHAR NULL DEFAULT NULL,
   reviewer_email VARCHAR NULL DEFAULT NULL,
-  response VARCHAR NOT NULL DEFAULT NULL,
+  response VARCHAR NULL DEFAULT NULL,
   helpfulness INTEGER NULL DEFAULT NULL,
   -- characteristics JSON NULL DEFAULT NULL,
   -- reviewerid INTEGER NULL DEFAULT NULL,
@@ -123,6 +123,8 @@ FOREIGN KEY (review_id)
 REFERENCES Reviews(id);
 
 CREATE INDEX ReviewsProductID ON reviews (product_id);
+CREATE INDEX CharacteristicsreviewsID ON Characteristicsreviews (characteristic_id);
+
 -- CREATE INDEX ReviewsID ON reviews (id);
 -- CREATE INDEX PhotosID ON photos (id);
 

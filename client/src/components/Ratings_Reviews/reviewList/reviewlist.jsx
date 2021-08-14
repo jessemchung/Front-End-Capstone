@@ -125,7 +125,9 @@ const ReviewList = ({ reviews }) => {
         <TagsList filterList={ratingFilter} />
       </HeaderWrapper>
       <List style={style}>
-        {reviewList.length === 0 ? <div style={{ width: '50%', margin: '50px auto 0 auto', textAlign: 'center' }}>Sorry, no reviews here!</div> : reviewList.map((item) => <ReviewListItem key={item.id} item={item} />)}
+        {reviewList.length === 0 ? <div style={{ width: '50%', margin: '50px auto 0 auto', textAlign: 'center' }}>Sorry, no reviews here!</div> : reviewList.map((item) => {
+          console.log(item, 'this is item in list in reviewlist');
+          return <ReviewListItem key={item.id} item={item} />})}
       </List>
       <ButtonWrapper>
         {moreReviewsClicked ? null : <Button onClick={handleMoreReviewsClick}>More Reviews</Button>}
