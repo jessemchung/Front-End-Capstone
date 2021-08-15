@@ -1,0 +1,134 @@
+{
+  "aggregate": {
+    "timestamp": "2021-08-15T07:54:25.513Z",
+    "scenariosCreated": 50,
+    "scenariosCompleted": 50,
+    "requestsCompleted": 50,
+    "latency": {
+      "min": 6,
+      "max": 20,
+      "median": 8,
+      "p95": 10,
+      "p99": 20
+    },
+    "rps": {
+      "count": 50,
+      "mean": 9.28
+    },
+    "scenarioDuration": {
+      "min": 12.4,
+      "max": 67.2,
+      "median": 15,
+      "p95": 24.4,
+      "p99": 67.2
+    },
+    "scenarioCounts": {
+      "0": 50
+    },
+    "errors": {},
+    "codes": {
+      "200": 50
+    },
+    "matches": 0,
+    "customStats": {},
+    "counters": {},
+    "scenariosAvoided": 0,
+    "phases": [
+      {
+        "duration": 5,
+        "arrivalRate": 10
+      }
+    ]
+  },
+  "intermediate": [
+    {
+      "timestamp": "2021-08-15T07:54:25.505Z",
+      "scenariosCreated": 50,
+      "scenariosCompleted": 50,
+      "requestsCompleted": 50,
+      "latency": {
+        "min": 6,
+        "max": 20,
+        "median": 8,
+        "p95": 10,
+        "p99": 20
+      },
+      "rps": {
+        "count": 50,
+        "mean": 9.29
+      },
+      "scenarioDuration": {
+        "min": 12.4,
+        "max": 67.2,
+        "median": 15,
+        "p95": 24.4,
+        "p99": 67.2
+      },
+      "scenarioCounts": {
+        "0": 50
+      },
+      "errors": {},
+      "codes": {
+        "200": 50
+      },
+      "matches": 0,
+      "latencies": [
+        20000000,
+        8000000,
+        7000000,
+        9000000,
+        7000000,
+        8000000,
+        7000000,
+        8000000,
+        7000000,
+        8000000,
+        8000000,
+        7000000,
+        8000000,
+        9000000,
+        8000000,
+        8000000,
+        10000000,
+        8000000,
+        8000000,
+        9000000,
+        7000000,
+        6000000,
+        9000000,
+        8000000,
+        8000000,
+        10000000,
+        7000000,
+        10000000,
+        7000000,
+        9000000,
+        7000000,
+        8000000,
+        8000000,
+        8000000,
+        8000000,
+        8000000,
+        8000000,
+        7000000,
+        8000000,
+        7000000,
+        7000000,
+        8000000,
+        8000000,
+        9000000,
+        8000000,
+        8000000,
+        8000000,
+        7000000,
+        8000000,
+        7000000
+      ],
+      "customStats": {},
+      "counters": {},
+      "concurrency": 0,
+      "pendingRequests": 0,
+      "scenariosAvoided": 0
+    }
+  ]
+}

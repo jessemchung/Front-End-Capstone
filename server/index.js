@@ -194,8 +194,7 @@ app.get('/reviews/meta', (req, res) => {
       characteristics: characteristics,
     }
     console.timeEnd("answer time");
-
-    res.send(finalConstruct);
+    res.status(200).send(finalConstruct);
   })
 
 });
@@ -314,9 +313,9 @@ app.put('/reviews/:review_id/helpful', (req, res) => {
 
   console.log(query2, 'this needs to be reworked');
   pool.query(query2).then((hel) => {
-    console.log('fish');
-    console.log(hel, 'helll');
-    console.log('fihs');
+    // console.log('fish');
+    // console.log(hel, 'helll');
+    // console.log('fihs');
     // res.status(200).send({ results: hel.rows });
     res.send('sdf');
 
