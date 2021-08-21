@@ -37,10 +37,10 @@ function App() {
       <GlobalStateProvider>
         {/* <CarouselComponent /> */}
         <idContext.Provider value={productID}>
-          <ProductDetails />
+          {/* <ProductDetails />
           <Related />
           <Favorites />
-          <QAndA />
+          <QAndA /> */}
           <RatingsAndReviews />
         </idContext.Provider>
       </GlobalStateProvider>

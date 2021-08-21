@@ -7,6 +7,7 @@ const Calls = require('../api');
 const app = express();
 const port = 3000;
 
+//reviews?sort=newest&product_id=41555&count=100
 
 const pg = require('pg');
 const keys = require('./config.js');
@@ -15,7 +16,7 @@ var config1 = {
   user: 'postgres',
   database: 'stellar',
   password: keys.key,
-  host: 'localhost',
+  host: '3.137.191.251',
   port: 5432,
   max: 10, // max number of clients in the pool
   idleTimeoutMillis: 30000
@@ -137,6 +138,13 @@ app.get('/reviews/characteristics', (req, res) => {
   }).catch((err) => console.log('Error in productsDB', err))
 
 });
+
+app.get('/loaderio-49dd9e0618ec4f92d8b48b6bafa519fb', (req, res) => {
+  res.send("loaderio-49dd9e0618ec4f92d8b48b6bafa519fb")
+
+});
+
+
 
 app.get('/reviews/meta', (req, res) => {
   console.time("answer time");
